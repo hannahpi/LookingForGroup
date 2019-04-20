@@ -1,3 +1,14 @@
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
 --
 -- Database: `lookingforgroup`
 --
@@ -10,6 +21,7 @@
 
 CREATE TABLE `groups` (
   `ID` bigint(20) NOT NULL,
+  `LeaderID` bigint(20) DEFAULT NULL COMMENT 'Leader''s user id',
   `Name` varchar(50) DEFAULT NULL,
   `Desc` longtext,
   `StartTime` time NOT NULL DEFAULT '22:00:00' COMMENT '24 hr start time',
@@ -47,7 +59,7 @@ CREATE TABLE `technologies` (
 
 CREATE TABLE `users` (
   `ID` bigint(20) NOT NULL,
-  `GroupID` int(11) DEFAULT NULL,
+  `GroupID` bigint(20) DEFAULT NULL,
   `Email` varchar(50) NOT NULL,
   `Username` varchar(50) NOT NULL,
   `StartTime` time NOT NULL DEFAULT '22:00:00',
@@ -78,7 +90,15 @@ CREATE TABLE `user_tech` (
 -- Indexes for table `groups`
 --
 ALTER TABLE `groups`
-  ADD PRIMARY KEY (`ID`);
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `group_leader_fk` (`LeaderID`);
+
+--
+-- Indexes for table `group_tech`
+--
+ALTER TABLE `group_tech`
+  ADD KEY `grouptech_tech_fk` (`TechID`),
+  ADD KEY `grouptech_group_fk` (`GroupID`);
 
 --
 -- Indexes for table `technologies`
@@ -90,7 +110,15 @@ ALTER TABLE `technologies`
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`ID`);
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `users_group_fk` (`GroupID`);
+
+--
+-- Indexes for table `user_tech`
+--
+ALTER TABLE `user_tech`
+  ADD KEY `usertech_fk` (`UserID`),
+  ADD KEY `usertech_tech_fk` (`TechID`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -107,6 +135,36 @@ ALTER TABLE `groups`
 --
 ALTER TABLE `technologies`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `groups`
+--
+ALTER TABLE `groups`
+  ADD CONSTRAINT `group_leader_fk` FOREIGN KEY (`LeaderID`) REFERENCES `users` (`ID`);
+
+--
+-- Constraints for table `group_tech`
+--
+ALTER TABLE `group_tech`
+  ADD CONSTRAINT `grouptech_group_fk` FOREIGN KEY (`GroupID`) REFERENCES `groups` (`ID`),
+  ADD CONSTRAINT `grouptech_tech_fk` FOREIGN KEY (`TechID`) REFERENCES `technologies` (`ID`);
+
+--
+-- Constraints for table `users`
+--
+ALTER TABLE `users`
+  ADD CONSTRAINT `users_group_fk` FOREIGN KEY (`GroupID`) REFERENCES `groups` (`ID`);
+
+--
+-- Constraints for table `user_tech`
+--
+ALTER TABLE `user_tech`
+  ADD CONSTRAINT `usertech_fk` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`),
+  ADD CONSTRAINT `usertech_tech_fk` FOREIGN KEY (`TechID`) REFERENCES `technologies` (`ID`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
