@@ -2,13 +2,14 @@
 
 require_once 'DebugHelper.php';
 require_once '../config/config.php';
+require_once 'Technology.php';
 
 class User {
     private $conn;
     private $table_name = 'users';
     private $attributes;
     private $debugH;
-    private $userID; //primary key, no reason to change this.
+    private $id; //primary key, no reason to change this.
     private $dirty;
 
     public $groupID;
@@ -94,7 +95,7 @@ class User {
         $stmt->bindValue(":startTime", $this->startTime, PDO::PARAM_INT);
         $stmt->bindValue(":duration", $this->duration, PDO::PARAM_INT);
         $stmt->bindValue(":timezoneOffset", strval($this->timezoneOffset), PDO::PARAM_STR);
-        $stmt->bindValue(":dst", $this->dst, PDO::PARAM_INT);
+        $stmt->bindValue(":dst", $this->dst, PDO::PARAM_BOOL);
         $stmt->bindValue(":location", $this->location, PDO::PARAM_STR);
         $stmt->bindValue(":groupID", $this->groupID, PDO::PARAM_INT);
         $stmt->bindValue(":verificationHash", $this->verificationHash, PDO::PARAM_STR);
@@ -128,7 +129,7 @@ class User {
     }
 
     public function setStartTime($startTime) {
-        if ($this->userID) {
+        if ($this->id) {
             if ($this->firstName != $firstName) {
                 $this->firstName = $firstName;
                 $this->dirty = true;
@@ -139,7 +140,7 @@ class User {
     }
 
     public function setDuration($duration) {
-        if ($this->userID) {
+        if ($this->id) {
             if ($this->duration != $duration) {
                 $this->duration = $duration;
                 $this->dirty = true;
@@ -150,7 +151,7 @@ class User {
     }
 
     public function setTimezoneOffset($timezoneOffset) {
-        if ($this->userID) {
+        if ($this->id) {
             if ($this->timezoneOffset != $timezoneOffset) {
                 $this->timezoneOffset = $timezoneOffset;
                 $this->dirty = true;
@@ -202,6 +203,10 @@ class User {
         } else {
             throw new Exception ('Set verificationHash for an uninitialized ' . get_class($this));
         }
+    }
+
+    public function getID() {
+        return $this->id;
     }
 
     public function getByID($id, $json=false) {
@@ -283,8 +288,12 @@ class User {
         return print_r(json_encode($userArray), true);
     }
 
+    public function getTableName() {
+        return $this->table;
+    }
+
     public function updateDB() {
-        if (isset($this->userID) && $this->dirty) {
+        if (isset($this->id) && $this->dirty) {
             $query = " Update " . $this->table . " set Email = :email, Username = :userName, "
                    . " StartTime = :startTime, Duration = :duration,  "
                    . " TimezoneOffset = :timezoneOffset, dst = :dst, "
@@ -297,7 +306,7 @@ class User {
             $stmt->bindValue(":startTime", $this->startTime, PDO::PARAM_INT);
             $stmt->bindValue(":duration", $this->duration, PDO::PARAM_INT);
             $stmt->bindValue(":timezoneOffset", strval($this->timezoneOffset), PDO::PARAM_STR);
-            $stmt->bindValue(":dst", $this->dst, PDO::PARAM_INT);
+            $stmt->bindValue(":dst", $this->dst, PDO::PARAM_BOOL);
             $stmt->bindValue(":location", $this->location, PDO::PARAM_STR);
             $stmt->bindValue(":groupID", $this->groupID, PDO::PARAM_INT);
             $stmt->bindValue(":verificationHash", $this->verificationHash, PDO::PARAM_STR);

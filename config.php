@@ -52,21 +52,5 @@ function errormail($email, $message, $errorInfo, $diemsg) {
 	echo '<link rel="stylesheet" type="text/css" href="'. $GLOBALS['CSS'] . '" />';
 	die("$diemsg");
 }
-function connect_lookingforgroup() {
-	$hostname = "localhost";
-	$username = $GLOBALS['DB_FULLUSER'];
-	$password = $GLOBALS['DB_PASSWORD'];
-	$db = $GLOBALS['DB_NAME'];
-	try {
-		$dbh = new PDO("mysql:host=$hostname;dbname=$db", $username, $password);
-		return $dbh;
-  	} catch(PDOException $e) {
-    	errormail($email, $e->getMessage(), "No info", $e->getMessage());
-  	}
-}
-
-
-
-
 
  ?>

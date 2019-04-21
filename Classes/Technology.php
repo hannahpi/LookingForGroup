@@ -6,6 +6,7 @@ require_once '../config/config.php';
 class Technology {
     private $conn;
     private $table_name = 'Technology';
+    private $table_group_tech = "group_tech";
     private $attributes;
     private $debugH;
     private $dirty;
