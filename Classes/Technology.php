@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once '../config/env.php';
+session_start_once();
 require_once 'DebugHelper.php';
 require_once '../config/config.php';
 
@@ -10,7 +11,7 @@ class Technology {
     private $attributes;
     private $debugH;
     private $dirty;
-    private $id
+    private $id;
 
     public $name;
     public $desc;
@@ -60,7 +61,7 @@ class Technology {
     public function get($id, $json=false) {
         $query = " SELECT `ID`, `Name`, `Desc` "
                . " FROM  " . $this->table
-               . " Where Technology.ID = :id ; "
+               . " Where Technology.ID = :id ; ";
 
         $stmt = $this->conn->prepare($query, $this->attributes);
         $stmt->bindValue(":id", $userID, PDO::PARAM_INT);
@@ -71,7 +72,7 @@ class Technology {
             $rows= $stmt->fetchAll();
             foreach ($rows as $row)
             {
-                if empty($sessionsArray) {
+                if (empty($sessionsArray)) {
                     $sessionsArray = array($this->interpretItem($row));
                 } else {
                     array_push($sessionsArray, $this->interpretItem($row));
@@ -106,5 +107,6 @@ class Technology {
             return json_encode(array("message"=>"no changes found to update!"));
         }
     }
+  }
 
-    ?>
+?>

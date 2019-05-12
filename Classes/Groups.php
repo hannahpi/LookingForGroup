@@ -1,6 +1,7 @@
 <?php
 require_once 'DebugHelper.php';
 require_once '../config/config.php';
+require_once '../config/env.php';
 require_once 'Technology.php';
 require_once 'User.php';
 

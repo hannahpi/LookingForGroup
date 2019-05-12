@@ -4,6 +4,8 @@
 $GLOBALS['ACTUAL_ADMIN'] = "youremailhere@localhost";
 // default PDO Attributes
 $GLOBALS['PDO_ATTRIBS'] = array(PDO::ATTR_CURSOR=> PDO::CURSOR_FWDONLY);
+//Database hostname
+$GLOBALS['DB_HOSTNAME']='localhost';
 // DB_USER_BASE - the base name for all of your database users
 // Leave this empty '' if there's no naming convention.
 // Most hosts use hostusername_database
@@ -11,9 +13,9 @@ $GLOBALS['DB_USER_BASE'] = '';
 // DB_USERNAME - username for this database
 $GLOBALS['DB_USERNAME'] = 'db_username';
 // DB_PASSWORD - Password for the database.
-$GLOBALS['DB_PASSWORD'] = 'password';
+$GLOBALS['DB_PASSWORD'] = 'db_password';
 // DB_SEL_NAME - Name of the database
-$GLOBALS['DB_SEL_NAME'] = 'lookingforgroup';
+$GLOBALS['DB_SEL_NAME'] = 'database';
 /* DB_FULLUSER - Full database name (shouldn't change this unless your provider uses a different username scheme).
  * and
  * DB_NAME - Data Base Name, you should not change this unless you have a different naming convention.
@@ -42,15 +44,6 @@ $GLOBALS['AUTO_ADMIN_EMAIL'] = 'no-reply@localhost';
 //FQP - Fully Qualified Path
 //Warning: This should not end with a / and it should start with http://
 $GLOBALS['FQP'] = 'http://localhost:8101/LookingForGroup';
-function errormail($email, $message, $errorInfo, $diemsg) {
-	//send email with confirmation link
-	$headers = "From: ". $GLOBALS['BUG_MAIL_NAME']. " <" . $GLOBALS['BUG_EMAIL'] .">";
-	$subject = "Error for $email";
-	$message .= "Additional information: $errorInfo \n "
-	           ." no session variables here. \n   ";
-	mail($GLOBALS['ACTUAL_ADMIN'],$subject,$message,$headers);
-	echo '<link rel="stylesheet" type="text/css" href="'. $GLOBALS['CSS'] . '" />';
-	die("$diemsg");
-}
+
 
  ?>

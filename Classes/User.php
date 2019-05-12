@@ -2,6 +2,7 @@
 
 require_once 'DebugHelper.php';
 require_once '../config/config.php';
+require_once '../config/env.php';
 require_once 'Technology.php';
 
 class User {
@@ -212,7 +213,7 @@ class User {
     public function getByID($id, $json=false) {
         $query = "SELECT ID, Email, Username, StartTime, Duration, TimezoneOffset, "
                . " DST, Location, GroupID, VerificationHash "
-               . " FROM " . $this->table
+               . " FROM " . $this->table_name
                . " Where ID = :id ";
 
         $stmt = $this->conn->prepare($query, $this->attributes);
@@ -271,7 +272,7 @@ class User {
     public function getAllJson() {
       $query = "SELECT ID, Email, Username, StartTime, Duration, TimezoneOffset, "
              . " DST, Location, GroupID, VerificationHash "
-             . " FROM " . $this->table;
+             . " FROM " . $this->table_name;
 
         $stmt = $this->conn->prepare($query, $this->attributes);
         $stmt->execute();

@@ -1,6 +1,7 @@
 <?php
 
 require_once '../config/config.php';
+require_once '../config/env.php';
 
 class Database {
     private $hostname;
