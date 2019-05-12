@@ -47,7 +47,7 @@ class User {
     public function __construct($conn, $attributes) {
         $this->attributes = $attributes;
         $this->conn = $conn;
-        $this->debugH = new DebugHelper();
+        $this->debugH = new DebugHelper(true);   //TODO: come back and remove this true
         $this->debugH->addObject($this);
         $this->dirty = false;
     }
@@ -74,8 +74,8 @@ class User {
             $this->verificationHash = crypt($verificationHash);
         }
 
-        $query = " INSERT INTO ". $this->table
-                ." (ID, Username, StartTime, Duration, TimezoneOffset, DST, "
+        $query = " INSERT INTO ". $this->table_name
+                ." (ID, Email, Username, StartTime, Duration, TimezoneOffset, DST, "
                 . " Location, GroupID, VerificationHash) "
                 ." VALUES (NULL, :email, :username, :startTime, :duration, :timezoneOffset, "
                 ." :dst, :location, :groupID, :verificationHash ); ";
@@ -91,7 +91,7 @@ class User {
         }
 
         $stmt = $this->conn->prepare($query, $this->attributes);
-        $stmt->bindValue(":ID", $this->id, PDO::PARAM_INT);  //this should be NULL
+        $stmt->bindValue(":email", $this->email, PDO::PARAM_STR);
         $stmt->bindValue(":username", $this->username, PDO::PARAM_STR);
         $stmt->bindValue(":startTime", $this->startTime, PDO::PARAM_INT);
         $stmt->bindValue(":duration", $this->duration, PDO::PARAM_INT);
@@ -241,7 +241,7 @@ class User {
     public function get($userEmail, $json=true) {
       $query = "SELECT ID, Email, Username, StartTime, Duration, TimezoneOffset, "
              . " DST, Location, GroupID, VerificationHash "
-             . " FROM " . $this->table
+             . " FROM " . $this->table_name
              . " Where Email = :email ";
 
         $stmt = $this->conn->prepare($query, $this->attributes);
@@ -290,12 +290,12 @@ class User {
     }
 
     public function getTableName() {
-        return $this->table;
+        return $this->table_name;
     }
 
     public function updateDB() {
         if (isset($this->id) && $this->dirty) {
-            $query = " Update " . $this->table . " set Email = :email, Username = :userName, "
+            $query = " Update " . $this->table_name . " set Email = :email, Username = :userName, "
                    . " StartTime = :startTime, Duration = :duration,  "
                    . " TimezoneOffset = :timezoneOffset, dst = :dst, "
                    . " Location = :location, GroupID = :groupID, VerificationHash = :verificationHash "
@@ -303,6 +303,7 @@ class User {
 
             $stmt = $this->conn->prepare($query, $this->attributes);
             $stmt->bindValue(":ID", $this->id, PDO::PARAM_INT);  //this should be NULL
+            $stmt->bindValue(":email", $this->email, PDO::PARAM_STR);
             $stmt->bindValue(":username", $this->username, PDO::PARAM_STR);
             $stmt->bindValue(":startTime", $this->startTime, PDO::PARAM_INT);
             $stmt->bindValue(":duration", $this->duration, PDO::PARAM_INT);

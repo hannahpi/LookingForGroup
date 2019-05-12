@@ -39,17 +39,23 @@ function update_user($conn, $attributes, $request) {
 function add_user($conn, $attributes, $request) {
     $user = new User($conn, $attributes);
     $userInfo = json_decode(strip_tags($request),true);
+    print_r($request);        
     $email = $userInfo["Email"];
     $username = $userInfo["Username"];
     $startTime = $userInfo["StartTime"];
-    $duration = $userInfo["Duration"];
-    $timezoneOffset = $userInfo["TimezoneOffset"];
-    $dst = $userInfo["DST"];
+    $duration = DateTime::createFromFormat("H:i:s", $userInfo["Duration"]);
+    $timezoneOffset = floatval($userInfo["TimezoneOffset"]);
+    $dst = (strtolower($userInfo["DST"]) == "true" ? true : false);
     $location = $userInfo["Location"];
-    if (!empty($userInfo["GroupID"]))
+    if (isset($userInfo["GroupID"]))
       $groupID = $userInfo["GroupID"];
+    else
+      $groupID = NULL;
+    echo "user information has been interpretted";
+    print_r(json_encode($userInfo));
     $user->createNew($email, $username, $startTime, $duration, $timezoneOffset,
            $dst, $location, $groupID);
+    echo "user was supposed to be created...";
     print_r(json_encode($user));
 }
 
